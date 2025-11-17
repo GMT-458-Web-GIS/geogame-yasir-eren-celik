@@ -1,6 +1,6 @@
 # GEOPORT
 
-> **Geography and transportation**, inspired by airport.
+> **Geography and transportation**
 
 ## Build Your Transport Empire
 
