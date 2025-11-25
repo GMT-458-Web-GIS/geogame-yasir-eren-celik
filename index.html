@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoPort - Transport Empire</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="intro-screen">
+        <div class="intro-background">
+            <div class="particles-container">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+            <div class="animated-lines">
+                <div class="line line-1"></div>
+                <div class="line line-2"></div>
+                <div class="line line-3"></div>
+            </div>
+            <div class="glow-sphere sphere-1"></div>
+            <div class="glow-sphere sphere-2"></div>
+            <div class="glow-sphere sphere-3"></div>
+            <div class="grid-overlay"></div>
+        </div>
+        <div class="intro-content">
+            <div class="hero-section">
+                <div class="logo-hero">
+                    <div class="logo-ring ring-1"></div>
+                    <div class="logo-ring ring-2"></div>
+                    <div class="logo-ring ring-3"></div>
+                    <div class="logo-core">
+                        <img src="geoport_logo.png" alt="GeoPort Logo" class="logo-hero-img">
+                    </div>
+                    <div class="logo-particles">
+                        <span class="particle-dot"></span>
+                        <span class="particle-dot"></span>
+                        <span class="particle-dot"></span>
+                        <span class="particle-dot"></span>
+                    </div>
+                </div>
+                <h1 class="hero-title">
+                    <span class="title-char" data-char="G">G</span>
+                    <span class="title-char" data-char="E">E</span>
+                    <span class="title-char" data-char="O">O</span>
+                    <span class="title-char" data-char="P">P</span>
+                    <span class="title-char" data-char="O">O</span>
+                    <span class="title-char" data-char="R">R</span>
+                    <span class="title-char" data-char="T">T</span>
+                </h1>
+                <div class="title-underline"></div>
+                <p class="hero-subtitle">
+                    <span class="subtitle-word">Lojistik</span>
+                    <span class="subtitle-word">İmparatorluğunuzu</span>
+                    <span class="subtitle-word">Kurun</span>
+                </p>
+            </div>
+            <div class="features-showcase">
+                <div class="feature-showcase-card" data-delay="0">
+                    <div class="feature-glow"></div>
+                    <div class="feature-icon-box">
+                        <span class="feature-showcase-icon">🚚</span>
+                    </div>
+                    <h3>Hızlı Teslimat</h3>
+                    <p>En kısa sürede hedefe ulaşın</p>
+                </div>
+                <div class="feature-showcase-card" data-delay="0.2">
+                    <div class="feature-glow"></div>
+                    <div class="feature-icon-box">
+                        <span class="feature-showcase-icon">📊</span>
+                    </div>
+                    <h3>Akıllı Rota</h3>
+                    <p>Gerçek yollarda optimize edilmiş rotalar</p>
+                </div>
+                <div class="feature-showcase-card" data-delay="0.4">
+                    <div class="feature-glow"></div>
+                    <div class="feature-icon-box">
+                        <span class="feature-showcase-icon">💰</span>
+                    </div>
+                    <h3>Kazanç Odaklı</h3>
+                    <p>Stratejik kararlarla kazançlarınızı artırın</p>
+                </div>
+            </div>
+            <button id="start-btn" onclick="startGame()" class="hero-button">
+                <span class="button-bg"></span>
+                <span class="button-content">
+                    <span class="button-text">OYUNU BAŞLAT</span>
+                    <span class="button-arrow">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                </span>
+                <span class="button-ripple"></span>
+            </button>
+        </div>
+    </div>
+
+    <div id="ui-layer" class="hidden">
+        <div class="top-bar">
+            <div class="navbar-left">
+                <span id="level-indicator" class="level-badge">LVL 1: Bisiklet</span>
+            </div>
+            <div class="navbar-center">
+                <img src="geoport_logo.png" alt="GeoPort" class="top-logo-img">
+                <div class="logo">GEOPORT</div>
+            </div>
+            <div class="navbar-right">
+                <div class="stat-box">
+                    <span class="stat-icon">💰</span>
+                    <span class="stat-label">Bakiye:</span>
+                    <span id="money-display" class="stat-value">₺0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-icon">📦</span>
+                    <span class="stat-label">Teslimat:</span>
+                    <span id="delivery-count" class="stat-value">0</span>
+                </div>
+                <button id="sound-toggle" class="sound-btn" onclick="toggleSound()" title="Ses Aç/Kapat">🔊</button>
+            </div>
+        </div>
+
+        <div id="instruction-panel" class="panel">
+            <div class="panel-header">
+                <h3>📋 Görev Durumu</h3>
+            </div>
+            <div class="panel-body">
+                <p id="instruction-text">Lütfen haritadan bir mağaza seçin.</p>
+                <div id="delivery-progress" class="hidden">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="progress-fill"></div>
+                        <div class="progress-text" id="progress-text">0%</div>
+                    </div>
+                    <p id="delivery-status">Yola çıkılıyor...</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="order-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Bir Sipariş Seç</h2>
+                <div class="cards-container">
+                    <div class="card" onclick="game.selectOrder(1)">
+                        <div class="icon">📦</div>
+                        <h3>Sipariş A</h3>
+                        <p>???</p>
+                    </div>
+                    <div class="card" onclick="game.selectOrder(2)">
+                        <div class="icon">📦</div>
+                        <h3>Sipariş B</h3>
+                        <p>???</p>
+                    </div>
+                    <div class="card" onclick="game.selectOrder(3)">
+                        <div class="icon">📦</div>
+                        <h3>Sipariş C</h3>
+                        <p>???</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="route-panel" class="panel hidden">
+            <div class="panel-header">
+                <h3>🗺️ Rota Seçimi</h3>
+            </div>
+            <div class="panel-body">
+                <div id="loading-routes" class="hidden">📡 Uydu verileri işleniyor...</div>
+                <div id="route-options"></div>
+                <button id="confirm-route-btn" class="btn-primary hidden" onclick="game.confirmRoute()">Rota Onayla</button>
+            </div>
+        </div>
+
+        <div id="result-modal" class="modal hidden">
+            <div class="modal-content large">
+                <h2>Teslimat Tamamlandı!</h2>
+                <canvas id="performanceChart"></canvas>
+                <div class="result-summary">
+                    <p id="profit-text"></p>
+                    <button onclick="game.nextTurn()" class="btn-primary">Sonraki Görev</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <div id="footer-bar" class="footer-bar hidden">
+        <div class="footer-left">
+            <span class="footer-course">GMT458 - Web GIS</span>
+            <span class="footer-dot">•</span>
+            <span class="footer-assignment">Assignment 2: GeoGame</span>
+        </div>
+        <div class="footer-center">
+            <a href="https://github.com/yecaiir" target="_blank" class="footer-github-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                <span>GitHub</span>
+            </a>
+        </div>
+        <div class="footer-right">
+            <a href="https://geomatik.hacettepe.edu.tr/" target="_blank" rel="noopener noreferrer" class="footer-dept-link">
+                Geomatics Engineering • Hacettepe University
+            </a>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
